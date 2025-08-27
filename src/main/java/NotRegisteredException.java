@@ -1,4 +1,5 @@
-package PACKAGE_NAME;
-
-public class NotRegisteredException {
+public class NotRegisteredException extends RuntimeException {
+    public NotRegisteredException(String message) {
+        super(message);
+    }
 }
