@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class Game {
     private final List<Player> registeredPlayers;
@@ -15,20 +14,26 @@ public class Game {
         }
 
         // Проверяем, не зарегистрирован ли уже игрок с таким id
-        boolean alreadyRegistered = registeredPlayers.stream()
-                .anyMatch(p -> p.getId() == player.getId());
-
-        if (!alreadyRegistered) {
-            registeredPlayers.add(player);
+        for (Player p : registeredPlayers) {
+            if (p.getId() == player.getId()) {
+                return; // игрок уже зарегистрирован, ничего не делаем
+            }
         }
+
+        registeredPlayers.add(player);
     }
 
     public int round(String playerName1, String playerName2) {
-        Player player1 = findPlayerByName(playerName1)
-                .orElseThrow(() -> new NotRegisteredException("Player " + playerName1 + " is not registered"));
+        Player player1 = findPlayerByName(playerName1);
+        Player player2 = findPlayerByName(playerName2);
 
-        Player player2 = findPlayerByName(playerName2)
-                .orElseThrow(() -> new NotRegisteredException("Player " + playerName2 + " is not registered"));
+        if (player1 == null) {
+            throw new NotRegisteredException("Player " + playerName1 + " is not registered");
+        }
+
+        if (player2 == null) {
+            throw new NotRegisteredException("Player " + playerName2 + " is not registered");
+        }
 
         if (player1.getStrength() > player2.getStrength()) {
             return 1; // победа первого игрока
@@ -43,9 +48,12 @@ public class Game {
         return new ArrayList<>(registeredPlayers); // возвращаем копию для защиты от изменений
     }
 
-    private Optional<Player> findPlayerByName(String name) {
-        return registeredPlayers.stream()
-                .filter(player -> player.getName().equals(name))
-                .findFirst();
+    private Player findPlayerByName(String name) {
+        for (Player player : registeredPlayers) {
+            if (player.getName().equals(name)) {
+                return player;
+            }
+        }
+        return null;
     }
 }

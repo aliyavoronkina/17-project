@@ -1,5 +1,6 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GameTest {
@@ -57,7 +58,7 @@ public class GameTest {
         assertFalse(player.equals("Not a Player"));
     }
 
-    // НЕДОСТАЮЩИЕ ТЕСТЫ ДЛЯ КЛАССA GAME:
+    // Тесты для класса Game
     @Test
     void testGameConstructor() {
         Game newGame = new Game();
@@ -84,9 +85,10 @@ public class GameTest {
     @Test
     void testGetRegisteredPlayersReturnsCopy() {
         game.register(player1);
-        // Просто проверяем что метод работает и возвращает данные
-        assertNotNull(game.getRegisteredPlayers());
-        assertEquals(1, game.getRegisteredPlayers().size());
+        List<Player> players = game.getRegisteredPlayers();
+        assertNotNull(players);
+        assertEquals(1, players.size());
+        assertEquals("Alice", players.get(0).getName());
     }
 
     @Test
@@ -131,7 +133,7 @@ public class GameTest {
         assertTrue(exception.getMessage().contains("Alice"));
     }
 
-    // ТЕСТЫ ДЛЯ NotRegisteredException:
+    // Тесты для NotRegisteredException
     @Test
     void testNotRegisteredExceptionConstructor() {
         String message = "Test message";
@@ -144,11 +146,10 @@ public class GameTest {
     @Test
     void testNotRegisteredExceptionInheritance() {
         NotRegisteredException exception = new NotRegisteredException("test");
-        // Проверяем, что это RuntimeException
         assertTrue(exception instanceof RuntimeException);
     }
 
-    // ТЕСТЫ ДЛЯ ОСТАЛЬНЫХ МЕТОДОВ PLAYER:
+    // Тесты для методов Player
     @Test
     void testPlayerGetters() {
         Player player = new Player(123, "TestPlayer", 150);
@@ -177,7 +178,7 @@ public class GameTest {
         assertEquals(100, player.getStrength());
     }
 
-    // ДОПОЛНИТЕЛЬНЫЕ ТЕСТЫ ДЛЯ ПОЛНОГО ПОКРЫТИЯ:
+    // Дополнительные тесты
     @Test
     void testRegisterMultiplePlayers() {
         game.register(player1);
@@ -207,19 +208,6 @@ public class GameTest {
     }
 
     @Test
-    void testEqualsWithNullObject() {
-        Player player = new Player(1, "Alice", 100);
-        assertFalse(player.equals(null)); // покрывает ветвь o == null
-    }
-
-    @Test
-    void testEqualsWithDifferentClassObject() {
-        Player player = new Player(1, "Alice", 100);
-        String notAPlayer = "Not a Player";
-        assertFalse(player.equals(notAPlayer)); // покрывает ветвь getClass() != o.getClass()
-    }
-
-    @Test
     void testEqualsWithDifferentAttributes() {
         Player player1 = new Player(1, "Alice", 100);
         Player player2 = new Player(2, "Alice", 100); // другой id
@@ -243,17 +231,13 @@ public class GameTest {
     }
 
     @Test
-    void testEqualsEdgeCases() {
-        Player player = new Player(1, "Alice", 100);
+    void testRegisterDuplicateNameDifferentId() {
+        Player player1 = new Player(1, "SameName", 100);
+        Player player2 = new Player(2, "SameName", 80);
 
-        // Тестирование с самим собой
-        assertTrue(player.equals(player));
+        game.register(player1);
+        game.register(player2);
 
-        // Тестирование с другим типом объекта
-        assertFalse(player.equals("string"));
-        assertFalse(player.equals(Integer.valueOf(1)));
-
-        // Тестирование с null
-        assertFalse(player.equals(null));
+        assertEquals(2, game.getRegisteredPlayers().size()); // Оба должны быть добавлены
     }
 }
