@@ -63,7 +63,7 @@ public class GameTest {
     void testGameConstructor() {
         Game newGame = new Game();
         assertNotNull(newGame);
-        assertEquals(0, newGame.getRegisteredPlayers().size());
+        assertArrayEquals(new Player[0], newGame.getRegisteredPlayers().toArray());
     }
 
     @Test
@@ -79,7 +79,7 @@ public class GameTest {
 
         // Должен остаться только первый игрок
         assertEquals(1, game.getRegisteredPlayers().size());
-        assertEquals("Alice", game.getRegisteredPlayers().get(0).getName());
+        assertArrayEquals(new Player[]{player1}, game.getRegisteredPlayers().toArray());
     }
 
     @Test
@@ -87,8 +87,7 @@ public class GameTest {
         game.register(player1);
         List<Player> players = game.getRegisteredPlayers();
         assertNotNull(players);
-        assertEquals(1, players.size());
-        assertEquals("Alice", players.get(0).getName());
+        assertArrayEquals(new Player[]{player1}, players.toArray());
     }
 
     @Test
@@ -189,7 +188,7 @@ public class GameTest {
     @Test
     void testEmptyGame() {
         Game emptyGame = new Game();
-        assertEquals(0, emptyGame.getRegisteredPlayers().size());
+        assertArrayEquals(new Player[0], emptyGame.getRegisteredPlayers().toArray());
     }
 
     @Test
@@ -238,6 +237,6 @@ public class GameTest {
         game.register(player1);
         game.register(player2);
 
-        assertEquals(2, game.getRegisteredPlayers().size()); // Оба должны быть добавлены
+        assertEquals(2, game.getRegisteredPlayers().size());
     }
 }
